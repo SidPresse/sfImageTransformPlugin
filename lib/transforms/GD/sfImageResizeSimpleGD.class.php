@@ -87,6 +87,84 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
   }
 
   /**
+   * [img_resizer description]
+   * @param  [type] $src     [description]
+   * @param  [type] $quality [description]
+   * @param  [type] $w       [description]
+   * @param  [type] $h       [description]
+   * @param  [type] $saveas  [description]
+   * @return [type]          [description]
+   */
+  protected function img_resizer(&$dest_resource,$resource,$w,$h) {
+
+        //list($width,$height)=getimagesize($src);
+        $width = imagesx($resource);
+        $height = imagesy($resource);
+        // check if ratios match
+        $_ratio=array($width/$height,$w/$h);
+        if ($_ratio[0] != $_ratio[1]) { // crop image
+
+            // find the right scale to use
+            $_scale=min((float)($width/$w),(float)($height/$h));
+
+            // coords to crop
+            $cropX=(float)($width-($_scale*$w));
+            $cropY=(float)($height-($_scale*$h));   
+           
+            // cropped image size
+            $cropW=(float)($width-$cropX);
+            $cropH=(float)($height-$cropY);
+           
+            $crop=ImageCreateTrueColor($cropW,$cropH);
+            // crop the middle part of the image to fit proportions
+            ImageCopy(
+                $crop,
+                $resource,
+                0,
+                0,
+                (int)($cropX/2),
+                (int)($cropY/2),
+                $cropW,
+                $cropH
+            );
+        }
+       
+        // do the thumbnail
+        if (isset($crop)) { // been cropped
+            ImageCopyResampled(
+                $dest_resource,
+                $crop,
+                0,
+                0,
+                0,
+                0,
+                $w,
+                $h,
+                $cropW,
+                $cropH
+            );
+            $res = 'cropped: '.$w.' '.$h.' '.$cropW.' '.$cropH;
+            ImageDestroy($crop);
+        } else { // ratio match, regular resize
+            $res = 'ratio matched';
+            ImageCopyResampled(
+                $dest_resource,
+                $resource,
+                0,
+                0,
+                0,
+                0,
+                $w,
+                $h,
+                $width,
+                $height
+            );
+        }
+        return $res;
+} 
+
+
+  /**
    * Apply the transform to the sfImage object.
    *
    * @param sfImage
@@ -120,7 +198,44 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
     }
 
     // Finally do our resizing
-    imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $this->width, $this->height,$x, $y);
+    
+//     // Recaclul du ratio
+ // $w = $x;
+ // $h = $y;
+ $w = $this->width;
+ $h = $this->height;
+
+
+// if($w > $h) {
+
+//           $adjusted_width = ceil(($x / $y) * $this->height);
+
+//          imagecopyresampled($dest_resource,$resource, 0, 0, 0, 0, $adjusted_width, $nh, $w, $h);
+
+
+//          $info = 'W>H   '.$adjusted_width.' '.$nh.' '.$w.' '.$h;
+//     } elseif(($w < $h) || ($w == $h)) {
+
+
+
+//          imagecopyresampled($dest_resource,$resource,0,0,0,0,$nw,$adjusted_height,$w,$h);
+//          $info = 'W<=H   '.$nw.' '.$adjusted_height.' '.$w.' '.$h;
+//     } else {
+//          imagecopyresampled($dest_resource,$resource,0,0,0,0,$nw,$nh,$w,$h);
+//          $info = 'autre   '.$nw.' '.$nh.' '.$w.' '.$h;
+//     }       
+
+    
+    //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $this->width, $this->height,$x, $y);
+
+    $result = self::img_resizer($dest_resource,$resource,$w,$h);
+    $info = $w.'/'.$h.' - '.$result;
+
+    $textcolor = imagecolorallocate($dest_resource, 0, 0, 255);
+    imagestring($dest_resource, 5, 0, 0, $info , $textcolor);
+
+
+    //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $this->width, $this->height,$x, $y);
     imagedestroy($resource);
 
     $image->getAdapter()->setHolder($dest_resource);
