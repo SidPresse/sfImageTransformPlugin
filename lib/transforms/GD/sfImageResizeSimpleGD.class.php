@@ -204,15 +204,30 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
     imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $neww, $newh, $w, $h);
 
     // crop the image
-    //imagecopyresized($dest_resource,$dest_resource, 0, 0, 10, 10, $neww-20, $newh-20, $neww-20, $newh-20);
+    //$crop_resource = $image->getAdapter()->getTransparentImage($neww, $newh);
+    //imagecopyresized($crop_resource,$dest_resource, 0, 0, 10, 10, $neww, $newh, $neww+18, $newh+20);
     //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $neww, $newh, $w, $h);
+    //$dest_resource = $crop_resource;
+
+    // cadre de couleur
+//     $rgb = imagecolorat($dest_resource,100,100);
+//     $colors = imagecolorsforindex($dest_resource, $rgb);
+//     $colorCadre = ImageColorAllocate ($dest_resource, $colors['red'], $colors['green'], $colors['blue']);  
+//     //cadre intérieur 1 pixel
+//     ImageLine ($dest_resource, 0, 0, $neww-1, 0, $colorCadre);  
+//     ImageLine ($dest_resource, 0, 0, 0, $newh-1, $colorCadre); 
+//     ImageLine ($dest_resource, 0, $newh-1, $neww-1, $newh-1, $colorCadre); 
+//     ImageLine ($dest_resource, $neww-1, $newh-1, $neww-1, 0, $colorCadre); 
+
+// $colorCadre = ImageColorAllocate ($dest_resource, 255, 255, 255);  
+// ImageLine ($dest_resource, 0, 0, 0, 20, $colorCadre); 
 
 
 
     //$result = self::img_resizer($dest_resource,$resource,$w,$h);
-    $info = $w.'/'.$h;
-    //$textcolor = imagecolorallocate($dest_resource, 255, 0, 0);
-    //imagestring($dest_resource, 5, 0, 0, $info , $textcolor);
+    // $info = $w.'/'.$h.' -> '.$neww.'/'.$newh.' colors'.$colors['red'].'/'.$colors['green'].'/'.$colors['blue'];
+    // $textcolor = imagecolorallocate($dest_resource, 255, 0, 0);
+    // imagestring($dest_resource, 5, 0, 0, $info , $textcolor);
 
 
     //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $this->width, $this->height,$x, $y);
