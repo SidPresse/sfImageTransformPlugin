@@ -105,15 +105,15 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
         if ($_ratio[0] != $_ratio[1]) { // crop image
 
             // find the right scale to use
-            $_scale=min((float)($width/$w),(float)($height/$h));
+            $_scale=min((float)($width/$w),(float)($height/$h))/0.9;
 
             // coords to crop
-            $cropX=(float)($width-($_scale*$w));
-            $cropY=(float)($height-($_scale*$h));   
+            $cropX=ceil($width-($_scale*$w));
+            $cropY=ceil($height-($_scale*$h));   
            
             // cropped image size
-            $cropW=(float)($width-$cropX);
-            $cropH=(float)($height-$cropY);
+            $cropW=ceil($width-$cropX);
+            $cropH=ceil($height-$cropY);
            
             $crop=ImageCreateTrueColor($cropW,$cropH);
             // crop the middle part of the image to fit proportions
@@ -143,7 +143,7 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
                 $cropW,
                 $cropH
             );
-            $res = 'cropped: '.$w.' '.$h.' '.$cropW.' '.$cropH;
+            $res = 'ratios : '.$_ratio[0].' -> '.$_ratio[1];
             ImageDestroy($crop);
         } else { // ratio match, regular resize
             $res = 'ratio matched';
@@ -174,8 +174,8 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
   {
     $resource = $image->getAdapter()->getHolder();
 
-    $x = imagesx($resource);
-    $y = imagesy($resource);
+    $w = imagesx($resource);
+    $h = imagesy($resource);
 
     // If the width or height is not valid then enforce the aspect ratio
     if (!is_numeric($this->width) || $this->width < 1)
@@ -198,41 +198,21 @@ class sfImageResizeSimpleGD extends sfImageTransformAbstract
     }
 
     // Finally do our resizing
+    $neww = $this->width;
+    $newh = $this->height;
     
-//     // Recaclul du ratio
- // $w = $x;
- // $h = $y;
- $w = $this->width;
- $h = $this->height;
+    imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $neww, $newh, $w, $h);
 
-
-// if($w > $h) {
-
-//           $adjusted_width = ceil(($x / $y) * $this->height);
-
-//          imagecopyresampled($dest_resource,$resource, 0, 0, 0, 0, $adjusted_width, $nh, $w, $h);
-
-
-//          $info = 'W>H   '.$adjusted_width.' '.$nh.' '.$w.' '.$h;
-//     } elseif(($w < $h) || ($w == $h)) {
+    // crop the image
+    //imagecopyresized($dest_resource,$dest_resource, 0, 0, 10, 10, $neww-20, $newh-20, $neww-20, $newh-20);
+    //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $neww, $newh, $w, $h);
 
 
 
-//          imagecopyresampled($dest_resource,$resource,0,0,0,0,$nw,$adjusted_height,$w,$h);
-//          $info = 'W<=H   '.$nw.' '.$adjusted_height.' '.$w.' '.$h;
-//     } else {
-//          imagecopyresampled($dest_resource,$resource,0,0,0,0,$nw,$nh,$w,$h);
-//          $info = 'autre   '.$nw.' '.$nh.' '.$w.' '.$h;
-//     }       
-
-    
-    //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $this->width, $this->height,$x, $y);
-
-    $result = self::img_resizer($dest_resource,$resource,$w,$h);
-    $info = $w.'/'.$h.' - '.$result;
-
-    $textcolor = imagecolorallocate($dest_resource, 0, 0, 255);
-    imagestring($dest_resource, 5, 0, 0, $info , $textcolor);
+    //$result = self::img_resizer($dest_resource,$resource,$w,$h);
+    $info = $w.'/'.$h;
+    //$textcolor = imagecolorallocate($dest_resource, 255, 0, 0);
+    //imagestring($dest_resource, 5, 0, 0, $info , $textcolor);
 
 
     //imagecopyresampled($dest_resource,$resource,0, 0, 0, 0, $this->width, $this->height,$x, $y);
