@@ -1,7 +1,7 @@
 # default values
 default:
   sfImageTransformPlugin:
-    default_adapter: ImageMagick # GD or ImageMagick   use : > find /data/www -wholename "*.thumbs/*" -exec rm -f {} \;   to purge all thumbs generated if change adapter
+    default_adapter: GD # GD or ImageMagick   use : > find /data/www -wholename "*.thumbs/*" -exec rm -f {} \;   to purge all thumbs generated if change adapter
     default_image:
       mime_type: image/png
       filename: Untitled.png
