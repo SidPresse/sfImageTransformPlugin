@@ -169,7 +169,7 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
   {
     $copyObj = clone $this;
 
-    $copyObj->setHolder($this->getHolder()->clone());
+    $copyObj->setHolder(clone $this->getHolder());
 
     return $copyObj;
   }
