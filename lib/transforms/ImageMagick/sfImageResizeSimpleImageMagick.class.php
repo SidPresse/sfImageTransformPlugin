@@ -94,7 +94,6 @@ class sfImageResizeSimpleImageMagick extends sfImageTransformAbstract
    */
   protected function transform(sfImage $image)
   {
-    set_time_limit(120);
 
     $resource = $image->getAdapter()->getHolder();
 
