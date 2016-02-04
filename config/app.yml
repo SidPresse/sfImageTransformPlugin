@@ -8,7 +8,7 @@ default:
       width: 100
       height: 100
       color: '#FFFFFF'
-    font_dir: /usr/share/fonts/truetype/msttcorefonts
+    font_dir: /usr/share/fonts/truetype/dejavu
     mime_type:
       auto_detect: false
       library: gd_mime_type #  gd_mime_type (GD), Fileinfo (PECL), MIME_Type (PEAR)

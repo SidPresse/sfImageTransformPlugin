@@ -232,6 +232,7 @@ class sfImageTextImageMagick extends sfImageTransformAbstract
     $draw = new ImagickDraw();
     $draw->setFont($this->font_dir . '/' . $this->font . '.ttf');
     $draw->setFontSize($this->size);
+    $draw->setFillColor($this->color);
 
     $resource->annotateImage($draw, $this->x, $this->y, $this->angle, $this->text);
 
