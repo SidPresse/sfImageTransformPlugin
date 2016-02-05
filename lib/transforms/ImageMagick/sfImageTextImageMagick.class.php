@@ -66,9 +66,9 @@ class sfImageTextImageMagick extends sfImageTransformAbstract
    *
    * @param array integer
    */
-  public function __construct($text, $x=0, $y=0, $size=10, $font='Arial', $color='#000000', $angle=0)
+  public function __construct($text, $x=0, $y=0, $size=10, $font='DejaVuSansCondensed', $color='#000000', $angle=0)
   {
-    $this->font_dir = sfConfig::get('app_sfImageTransformPlugin_font_dir','/usr/share/fonts/truetype/msttcorefonts');
+    $this->font_dir = dirname(__FILE__).'/../../fonts/dejavu';    //sfConfig::get('app_sfImageTransformPlugin_font_dir','/usr/share/fonts/truetype/msttcorefonts');
     $this->setText($text);
     $this->setX($x);
     $this->setY($y);
