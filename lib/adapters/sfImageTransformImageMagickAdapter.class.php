@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the sfImageTransform package.
  * (c) 2007 Stuart Lowes <stuart.lowes@gmail.com>
@@ -157,8 +158,37 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
 
     $this->getHolder()->setImageCompressionQuality($this->getQuality());
 
-    return $this->getHolder()->writeImage($filename);
+    if($this->getHolder()->writeImage($filename)){
+      self::imageCompressor($filename);
+      return true;
+    } else {
+      return false;
+    }
+  
   }
+
+
+    public function imageCompressor($filename){
+        $mimeType = mime_content_type($filename);
+        switch ($mimeType) {
+            case 'image/jpeg':
+                $command = 'jpegoptim -t --all-progressive --strip-all '.$filename;
+                break;
+            case 'image/png':
+                $command = 'optipng ' .$filename;
+                break;
+           default:
+                // nothing to do
+                break;
+        } 
+
+        // echo $command."<br/>";
+        exec($command, $return);
+        // var_dump($return);
+    }
+
+
+
 
   /**
    * Returns a copy of the adapter object
@@ -301,6 +331,10 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
     if (parent::setQuality($quality))
     {
       $this->getHolder()->setImageCompressionQuality($quality);
+
+      $compression_type = imagick::COMPRESSION_LOSSLESSJPEG;
+    
+      $this->getHolder()->setImageCompression($compression_type);
 
       return true;
     }
