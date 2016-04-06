@@ -139,7 +139,13 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
   {
     $this->getHolder()->setImageCompressionQuality($this->getQuality());
 
-    return $this->getHolder()->writeImage($this->getFilename());
+    if($this->getHolder()->writeImage($this->getFilename())){
+      self::imageCompressor($this->getFilename());
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   /**
@@ -167,15 +173,28 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
   
   }
 
-
+    /**
+     * image compressor for reduce size of thumbs generated
+     * @param  [type] $filename [description]
+     * @return [type]           [description]
+     */
     public function imageCompressor($filename){
         $mimeType = mime_content_type($filename);
+        $command = '';
         switch ($mimeType) {
             case 'image/jpeg':
-                $command = 'jpegoptim -t --all-progressive --strip-all '.$filename;
+                if (`which jpegoptim`) {
+                    $command = 'jpegoptim -t --all-progressive --strip-all '.$filename.' 2>&1';
+                } else {
+                    echo debugTools::infoDebug(array('jpegoptim not found' => 'Please install jpegoptim to compress png image'),'error');
+                }
                 break;
             case 'image/png':
-                $command = 'optipng ' .$filename;
+                if (`which optipng`) {
+                    $command = 'optipng ' .$filename.' 2>&1';
+                } else {
+                    echo debugTools::infoDebug(array('optipng not found' => 'Please install optipng to compress png image'),'error');
+                }
                 break;
            default:
                 // nothing to do
@@ -183,12 +202,9 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
         } 
 
         // echo $command."<br/>";
-        exec($command, $return);
+        if($command) exec($command, $return);
         // var_dump($return);
     }
-
-
-
 
   /**
    * Returns a copy of the adapter object
