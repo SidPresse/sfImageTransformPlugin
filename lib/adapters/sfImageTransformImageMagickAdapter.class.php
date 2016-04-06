@@ -186,14 +186,18 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
                 if (`which jpegoptim`) {
                     $command = 'jpegoptim -t --all-progressive --strip-all '.$filename.' 2>&1';
                 } else {
-                    echo debugTools::infoDebug(array('jpegoptim not found' => 'Please install jpegoptim to compress png image'),'error');
+                    if(!dmContext::getInstance()->getRequest()->isXmlHttpRequest()){ 
+                        echo debugTools::infoDebug(array('jpegoptim not found' => 'Please install jpegoptim to compress png image'),'error');
+                    }
                 }
                 break;
             case 'image/png':
                 if (`which optipng`) {
                     $command = 'optipng ' .$filename.' 2>&1';
                 } else {
-                    echo debugTools::infoDebug(array('optipng not found' => 'Please install optipng to compress png image'),'error');
+                    if(!dmContext::getInstance()->getRequest()->isXmlHttpRequest()){
+                        echo debugTools::infoDebug(array('optipng not found' => 'Please install optipng to compress png image'),'error');
+                    }
                 }
                 break;
            default:
