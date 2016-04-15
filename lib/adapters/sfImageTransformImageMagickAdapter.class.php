@@ -187,16 +187,18 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
                     $command = 'jpegoptim -t --all-progressive --strip-all '.$filename.' 2>&1';
                 } else {
                     if(!dmContext::getInstance()->getRequest()->isXmlHttpRequest()){ 
-                        echo debugTools::infoDebug(array('jpegoptim not found' => 'Please install jpegoptim to compress png image'),'error');
+                        sfContext::getInstance()->getUser()->setFlash('warning', '<i class="icon-warning-sign"></i> jpegoptim not found : Please install jpegoptim to compress jpeg image.');
+                        // echo debugTools::infoDebug(array('jpegoptim not found' => 'Please install jpegoptim to compress png image'),'error');
                     }
                 }
                 break;
             case 'image/png':
                 if (`which optipng`) {
-                    $command = 'optipng ' .$filename.' 2>&1';
+                    $command = 'optipng' .$filename.' 2>&1';
                 } else {
                     if(!dmContext::getInstance()->getRequest()->isXmlHttpRequest()){
-                        echo debugTools::infoDebug(array('optipng not found' => 'Please install optipng to compress png image'),'error');
+                      sfContext::getInstance()->getUser()->setFlash('warning', '<i class="icon-warning-sign"></i> optipng not found : Please install optipng to compress png image.');
+                      // echo debugTools::infoDebug(array('optipng not found' => 'Please install optipng to compress png image'),'error');
                     }
                 }
                 break;
