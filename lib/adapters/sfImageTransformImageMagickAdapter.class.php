@@ -183,7 +183,7 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
         $command = '';
         switch ($mimeType) {
             case 'image/jpeg':
-                if (`which jpegoptim`) {
+                if (self::command_exist("jpegoptim")) {
                     $command = 'jpegoptim -t --all-progressive --strip-all '.$filename.' 2>&1';
                 } else {
                     if(!dmContext::getInstance()->getRequest()->isXmlHttpRequest()){ 
@@ -193,7 +193,7 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
                 }
                 break;
             case 'image/png':
-                if (`which optipng`) {
+                if (self::command_exist("optipng")) {
                     $command = 'optipng' .$filename.' 2>&1';
                 } else {
                     if(!dmContext::getInstance()->getRequest()->isXmlHttpRequest()){
@@ -211,6 +211,13 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
         if($command) exec($command, $return);
         // var_dump($return);
     }
+
+  public function command_exist($cmd) {
+    $returnVal = shell_exec("which $cmd");
+    return (empty($returnVal) ? false : true);
+  }
+
+
 
   /**
    * Returns a copy of the adapter object
