@@ -183,11 +183,11 @@ class sfImageTransformImageMagickAdapter extends sfImageTransformAdapterAbstract
         $command = '';
         switch ($mimeType) {
             case 'image/jpeg':
-                $command = fileTools::getJpegoptim().' -t --all-progressive -m'.dmConfig::get('jpegoptim-quality', 100).' --strip-all "'.$filename.'" 2>&1';
+                $command = fileTools::getJpegoptim().' -t --all-progressive -m'.dmConfig::get('jpegoptim-quality', 100).' --strip-all '.escapeshellarg($filename).' 2>&1';
                 // file_put_contents('/tmp/ggg', $filename . ' - '. "\n".$command."\n\n", FILE_APPEND);
                 break;
             case 'image/png':
-                $command = fileTools::getOptipng().' "'.$filename.'" 2>&1';
+                $command = fileTools::getOptipng().' '.escapeshellarg($filename).' 2>&1';
                 break;
            default:
                 // nothing to do
